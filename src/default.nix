@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> { } }:
 
 pkgs.clangStdenv.mkDerivation {
-  name = "Fibonacci";
+  name = "Fibonacci-consumer";
   src = ./.;
 
   nativeBuildInputs = with pkgs; [
@@ -9,5 +9,7 @@ pkgs.clangStdenv.mkDerivation {
     cmake
     ninja
     ut
+    nlohmann_json
+    (callPackage ../libs/Fibonacci { })
   ];
 }

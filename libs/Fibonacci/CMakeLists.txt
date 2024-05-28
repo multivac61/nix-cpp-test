@@ -1,47 +1,66 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.22)
 
-project(Fibonacci
-  VERSION 1.0.0
-  DESCRIPTION "Calculate the n-th Fibonacci number"
-  LANGUAGES CXX
+project(Fibonacci_consumer
+    VERSION 0.0.1
+    DESCRIPTION "Consumer of the Fibonacci sequence"
+    LANGUAGES CXX
 )
 
-add_library(${PROJECT_NAME} SHARED
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/fibonacci.cpp
-)
+set(CMAKE_CXX_STANDARD 17)
 
-set_target_properties(${PROJECT_NAME}
-  PROPERTIES
-  VERSION ${PROJECT_VERSION}
-  SOVERSION ${PROJECT_VERSION_MAJOR}
-  PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/fibonacci.h
-)
+# global debug postfix for libraries (executables still need to set it)
+set(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Filename postfix for libraries under DEBUG configuration")
+
+add_library(${PROJECT_NAME} src/Fibonacci.cpp)
+add_library(acme::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
-  PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/src
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-# Generate the pkg-config file: https://manpages.ubuntu.com/manpages/noble/en/man5/pc.5.html
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/pkg.pc.in 
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc 
-  @ONLY
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "include/acme/Fibonacci.h")
+
+# install the target and create export-set
+install(TARGETS ${PROJECT_NAME}
+    EXPORT "${PROJECT_NAME}Targets"
+    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-install(
-  TARGETS ${PROJECT_NAME}
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  PUBLIC_HEADER DESTINATION include
+# generate and install export file
+install(EXPORT "${PROJECT_NAME}Targets"
+    FILE "${PROJECT_NAME}Targets.cmake"
+    NAMESPACE acme::
+    DESTINATION "share/${PROJECT_NAME}"
 )
 
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
-  DESTINATION lib/pkgconfig
+# generate the version file for the config file
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    COMPATIBILITY AnyNewerVersion
 )
+# create config file
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION "share/${PROJECT_NAME}"
+)
+# install config files
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION "share/${PROJECT_NAME}"
+)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/compile_commands.json)
 
 enable_testing()
 add_subdirectory(tests)

@@ -1,5 +1,8 @@
-#include "fibonacci.h"
+#include "acme/Fibonacci.h"
+#include <algorithm>
 
-constexpr int Fibonacci::fibonacci(int n) { return fibonacci(n, start, next); }
+int Fibonacci::fibonacci(int n) { return fibonacci(n, start, next); }
 
-constexpr int Fibonacci::fibonacci(int n, int a, int b) { return n == 0 ? a : fibonacci(n - 1, b, a + b); }
+int Fibonacci::fibonacci(int n, int a, int b) {
+  return n == 0 ? a : fibonacci(n - 1, b, a + b);
+}
