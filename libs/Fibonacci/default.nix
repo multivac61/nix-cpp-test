@@ -14,8 +14,7 @@ stdenv.mkDerivation {
   ];
 
   cmakeFlags = [
-    "-DPOAC_BUILD_TESTING=OFF"
-    "-DCPM_SOURCE_CACHE=${placeholder "out"}/share"
+    "-DFETCHCONTENT_FULLY_DISCONNECTED=ON"
     "-DFETCHCONTENT_SOURCE_DIR_PACKAGEPROJECT.CMAKE=${pkgs.package-project-cmake.src}"
   ];
 }

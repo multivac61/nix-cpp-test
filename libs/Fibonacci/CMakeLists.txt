@@ -27,7 +27,6 @@ FetchContent_Declare(
   GIT_REPOSITORY      https://github.com/TheLartians/PackageProject.cmake
   GIT_TAG MD5=2d8a4685857c768da7ad1d8a7c6e07b1b5285cca
 )
-
 FetchContent_MakeAvailable(PACKAGEPROJECT.CMAKE)
 
 packageProject(
