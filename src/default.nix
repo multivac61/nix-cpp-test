@@ -1,8 +1,9 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ stdenv, pkgs, ... }:
 
-pkgs.clangStdenv.mkDerivation {
+stdenv.mkDerivation {
   name = "Fibonacci-consumer";
   src = ./.;
+  doCheck = true;
 
   nativeBuildInputs = with pkgs; [
     clang
@@ -10,9 +11,6 @@ pkgs.clangStdenv.mkDerivation {
     ninja
     ut
     nlohmann_json
-  ];
-  buildInputs = [
     (pkgs.callPackage ../libs/Fibonacci { })
   ];
-
 }

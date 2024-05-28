@@ -13,7 +13,7 @@
       perSystem = { pkgs, system, ... }:
         {
           packages.lib = pkgs.callPackage ./libs/Fibonacci { };
-          packages.consumer = pkgs.callPackage ./src { };
+          packages.bin = pkgs.callPackage ./src { };
         };
     };
 }
