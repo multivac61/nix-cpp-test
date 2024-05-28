@@ -12,8 +12,8 @@
 
       perSystem = { pkgs, system, ... }:
         {
-          packages.Fibonacci-lib = pkgs.callPackage ./libs/Fibonacci { };
-          packages.Fibonacci-consumer = pkgs.callPackage ./src { };
+          packages.lib = pkgs.callPackage ./libs/Fibonacci { };
+          packages.consumer = pkgs.callPackage ./src { };
         };
     };
 }

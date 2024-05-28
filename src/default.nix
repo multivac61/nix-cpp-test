@@ -10,6 +10,9 @@ pkgs.clangStdenv.mkDerivation {
     ninja
     ut
     nlohmann_json
-    (callPackage ../libs/Fibonacci { })
   ];
+  buildInputs = [
+    (pkgs.callPackage ../libs/Fibonacci { })
+  ];
+
 }

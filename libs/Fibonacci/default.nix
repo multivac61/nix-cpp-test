@@ -1,6 +1,6 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ stdenv, pkgs, ... }:
 
-pkgs.clangStdenv.mkDerivation {
+stdenv.mkDerivation {
   name = "Fibonacci";
   src = ./.;
 

@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(Fibonacci_consumer
+project(Fibonacci
     VERSION 0.0.1
-    DESCRIPTION "Consumer of the Fibonacci sequence"
+    DESCRIPTION "C++ Fibonacci sequence generator"
     LANGUAGES CXX
 )
 
@@ -19,11 +19,14 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/src
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/acme>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/acme>
 )
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+enable_testing()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "include/acme/Fibonacci.h")
 
@@ -38,7 +41,8 @@ install(TARGETS ${PROJECT_NAME}
 install(EXPORT "${PROJECT_NAME}Targets"
     FILE "${PROJECT_NAME}Targets.cmake"
     NAMESPACE acme::
-    DESTINATION "share/${PROJECT_NAME}"
+    # DESTINATION "share/${PROJECT_NAME}"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
 
 # generate the version file for the config file
@@ -48,15 +52,17 @@ write_basic_package_version_file(
 )
 # create config file
 configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+    "${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION "share/${PROJECT_NAME}"
+    # INSTALL_DESTINATION "share/${PROJECT_NAME}"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
 # install config files
 install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    DESTINATION "share/${PROJECT_NAME}"
+    # DESTINATION "share/${PROJECT_NAME}"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
